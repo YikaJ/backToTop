@@ -3,8 +3,9 @@
 		var self = this;
 		/* config为默认参数，cfg为传入参数 */
 		this.config = {
-			el : "backToTop",
-			target : 0,
+			el: "backToTop",
+			startToShow: document.documentElement.clientHeight/2,
+			target: 0,
 			speed: "normal",
 			callback: function(){
 				console.log("I am callback!");
@@ -30,9 +31,20 @@
 		/*事件监听*/
 		this.el.addEventListener("click",function(){
 			self.toTop();
-		})
+		});
+		window.onscroll = function(){
+			var scrollTop = document.documentElement.scrollTop + document.body.scrollTop;
+			if(scrollTop >= self.config.startToShow){
+				self.showUp();
+			}else{
+				self.hideOut();
+			}
+		}
+		window.onscroll(); //立即触发，当为0时依然会出现
 	};
-	BackToTop.prototype.toTop = function(cb){
+
+	/*对象方法*/
+	BackToTop.prototype.toTop = function(){
 		var self = this;
 		clearInterval(this.timer);
 		var current = 0;
@@ -46,15 +58,22 @@
 				}
 			}else{
 				document.documentElement.scrollTop = current + speed;
+				document.body.scrollTop = current + speed;
 			}
 		},this.speed)
 	};
-
+	BackToTop.prototype.showUp = function(){
+		this.el.style.display = "block";
+	};
+	BackToTop.prototype.hideOut = function(){
+		this.el.style.display = "none";
+	};
 	/*初始化*/
 	var backToTop = new BackToTop({
-		el: "backToTop",  //id or object
-		target: 0,      //where to stop? number(add "px" by itself autolly)
-		speed: "fast",    //"fast", "normal", "slow"
+		el: "backToTop",    //传入id 或者 对象object
+		startToShow: document.documentElement.clientHeight/2, //出现的位置,当为0时,表示不消失
+		target: 0,      	  //回滚到哪儿, 默认为顶部0
+		speed: "normal",    //三个参数可选"fast", "normal", "slow"
 		callback: function(){
 			console.log("I am callback! Set it by yourself");
 		}

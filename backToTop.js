@@ -5,7 +5,10 @@
 		this.config = {
 			el : "backToTop",
 			target : 0,
-			speed: "normal"
+			speed: "normal",
+			callback: function(){
+				console.log("I am callback!");
+			}
 		}
 		for(var c in cfg){
 			this.config[c] = cfg[c];
@@ -37,16 +40,23 @@
 			current = document.documentElement.scrollTop + document.body.scrollTop; //获取当前的值,并转化成数字
 			speed = Math.ceil((self.config.target - current)/6);
 			if((current == self.config.target) || (speed == 0)){
-				console.log("clear");
 				clearInterval(self.timer);
+				if(self.config.callback){
+					self.config.callback();
+				}
 			}else{
 				document.documentElement.scrollTop = current + speed;
 			}
 		},this.speed)
 	};
+
+	/*初始化*/
 	var backToTop = new BackToTop({
-		el: "backToTop", //id or object
-		target: 250,      //where to stop? number(add "px" by itself autolly)
-		speed: "fast"    //"fast", "normal", "slow"
+		el: "backToTop",  //id or object
+		target: 0,      //where to stop? number(add "px" by itself autolly)
+		speed: "fast",    //"fast", "normal", "slow"
+		callback: function(){
+			console.log("I am callback! Set it by yourself");
+		}
 	});
 })()
